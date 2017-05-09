@@ -1,0 +1,33 @@
+{
+  "name": "yolo-app-frontend",
+  "version": "1.0.0",
+  "description": "An angular.js application that consumes the yolo API.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brayovsky/yolo-app-frontend.git"
+  },
+  "author": "Muthui Muthengi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brayovsky/yolo-app-frontend/issues"
+  },
+  "homepage": "https://github.com/brayovsky/yolo-app-frontend#readme",
+  "dependencies": {
+    "angular": "^1.4.0",
+    "angular-cookies": "^1.4.0",
+    "angular-resource": "^1.4.0",
+    "angular-route": "^1.4.0",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "lite-server": "^2.3.0"
+  },
+  "scripts": {
+    "dev" : "lite-server"
+  }
+}
