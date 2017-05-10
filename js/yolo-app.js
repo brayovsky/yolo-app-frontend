@@ -10,7 +10,7 @@ yoloApp.config(['$routeProvider', '$locationProvider',
     function($routeProvider, $locationProvider){
         $routeProvider.
         when('/', {
-            templateUrl: 'partials/main.html',
+            templateUrl: 'partials/landingpage.html',
             controller: 'MainCtrl' }).
         when('/dashboard', {
             templateUrl: '/partials/bucketlists.html',
