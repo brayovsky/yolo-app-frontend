@@ -1,0 +1,56 @@
+{% raw %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <span role="button" class="text-primary" ng-click="goToDashboard()">Back to dashboard</span>
+    </div>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="bucketlist-card">
+            <form>
+                <input class="strip-input text-large text-capitalize" title="click to edit" ng-model="bucketlist.name" />
+                <button class="strip-button" type="submit" ng-click="editBucketlistName()"></button>
+            </form>
+            <div>
+                <form ng-repeat="item in bucketlist.items">
+                    <input class="strip-input" title="Click to edit" ng-model="item.name" />
+                    <button class="strip-button" type="submit" ng-click="editItem(item.id, $index);"></button>
+                </form>
+            </div>
+            <p class="text-danger" style="padding:15px" ng-repeat="error in errors.itemName">{{ error }}</p>
+            <p class="text-danger" style="padding:15px" ng-repeat="error in errors.bucketlistErrors">{{ error }}</p>
+            <form class="navbar-form">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Add item" name="add-item" id="add-item" type="text" ng-model="newItemName">
+                    <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit" ng-click="addNewItem();">Add</button>
+                    </div>
+                </div>
+            </form>
+            <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created }}</i></p>
+            <p class="text-info" style="font-size: 11px"><i>Modified: {{ bucketlist.date_modified }}</i></p>
+            <button class="strip-button text-danger" data-toggle="modal" data-target="#delete-bucketlist-modal">Delete this bucketlist</button>
+        </div>
+    </div>
+    <!--modals-->
+    <!--Delete bucketlist modal-->
+    <div id="delete-bucketlist-modal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-sm">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h5 class="modal-title">Confirm delete</h5>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete this bucketlist?</p>
+              <p class="txt-danger" ng-bind="deleteMessage"></p>
+              <button class="btn btn-danger" data-dismiss="modal" ng-click="deleteBucketlist();">Yes, delete</button>
+              <button class="btn btn-default" data-dismiss="modal">No, don't delete</button>
+          </div>
+        </div>
+
+      </div>
+</div>
+    <!--end modals-->
+</div>
+{% endraw %}
