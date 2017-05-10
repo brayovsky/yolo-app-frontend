@@ -13,7 +13,9 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
             signupUsername: [],
             signupEmail: [],
             signupPassword: [],
-            signupRepeatPassword: []
+            signupRepeatPassword: [],
+            loginUsername: [],
+            loginPassword: []
         };
 
         // Highlight inputs if they have errors
@@ -23,6 +25,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
             // Add erred input id
             $scope.erredInputs.push(inputid);
         }
+
 
         // Toggle login form
         $scope.toggleLogin = function(event){
@@ -129,6 +132,31 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
         // Access login endpoint
         $scope.yoloLogin = function(){
+            // Clear previous errors
+            $scope.errors.loginPassword = [];
+            $scope.errors.loginUsername = [];
+            for(var i=0; i < $scope.erredInputs.length; i++) {
+                // Remove error highlight via jquery
+                $('#' + $scope.erredInputs[i]).removeClass('yolo-erred-input');
+            }
+
+            var erred = false;
+            // Check username is not empty
+            if(!$scope.loginUsername){
+                $scope.highlightInput('login-username');
+                $scope.errors.loginUsername.push('Fill in username');
+                erred = true;
+            }
+            // Check password is not empty
+            if(!$scope.loginPassword){
+                $scope.highlightInput('login-password');
+                $scope.errors.loginPassword.push('Fill in password');
+                erred = true;
+            }
+
+            if(erred)
+                return;
+
             $http({
                 method : 'POST',
                 url : globalVars.apiRoot + 'auth/login',
