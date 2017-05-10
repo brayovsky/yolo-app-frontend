@@ -282,6 +282,7 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
             $scope.bucketlist = response;
+            $scope.isBucketlistPresent = true;
         }, function error(response){
             // Go back to dashboard,
             if (response.status === 400){
@@ -344,6 +345,7 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             // Close modal
             SingleBucketlist.remove({id: $scope.bucketlist.id}, function success(response){
                 // Switch to dashboard
+                $scope.isBucketlistPresent = false;
                 $scope.bucketlist = null;
                 $scope.errors.bucketlistErrors = ['Bucketlist deleted. Nothing to do here. Reload page.'];
             }, function error(response){

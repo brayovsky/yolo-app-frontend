@@ -4,7 +4,7 @@
     </div>
     <div class="col-md-6 col-md-offset-3">
         <p class="text-success text-center" style="padding:15px" ng-repeat="error in errors.bucketlistErrors">{{ error }}</p>
-        <div class="bucketlist-card" ng-if="bucketlist">
+        <div class="bucketlist-card" ng-hide="!isBucketlistPresent">
             <form>
                 <input class="strip-input text-large text-capitalize" title="click to edit" ng-model="bucketlist.name" />
                 <button class="strip-button" type="submit" ng-click="editBucketlistName()"></button>
