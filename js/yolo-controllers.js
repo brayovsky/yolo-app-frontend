@@ -2,8 +2,8 @@
 /* Controllers */
 var yoloControllers = angular.module('yoloControllers', ['yoloServices']);
 
-yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken','deleteAuthToken',
-    function MainCtrl($scope, $http, $location, saveAuthToken, deleteAuthToken) {
+yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken','deleteAuthToken','globalVars',
+    function MainCtrl($scope, $http, $location, saveAuthToken, deleteAuthToken, globalVars) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
         $scope.showSignup = true;
@@ -40,7 +40,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
             // Access API
             $http({
                 method : 'POST',
-                url : 'api/v1/auth/register',
+                url : globalVars.apiRoot + 'auth/register',
                 data: $.param({
                     'username': $scope.signupUsername,
                     'email': $scope.signupEmail,
@@ -86,7 +86,7 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
         $scope.yoloLogin = function(){
             $http({
                 method : 'POST',
-                url : 'api/v1/auth/login',
+                url : globalVars.apiRoot + 'auth/login',
                 data: $.param({
                     'username': $scope.loginUsername,
                     'password': $scope.loginPassword

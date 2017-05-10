@@ -1,10 +1,10 @@
 var yoloServices = angular.module('yoloServices', ['ngResource', 'ngCookies']);
 
 //Bucketlist services
-yoloServices.factory('Bucketlist', ['$resource', 'getAuthTokens',
-    function ($resource, getAuthTokens) {
+yoloServices.factory('Bucketlist', ['$resource', 'getAuthTokens','globalVars',
+    function ($resource, getAuthTokens, globalVars) {
         return $resource(
-            "http://127.0.0.1:5000/api/v1/bucketlists/",
+            globalVars.apiRoot + 'bucketlists/',
         {}, {
         get: {
             method: 'GET',
@@ -19,10 +19,10 @@ yoloServices.factory('Bucketlist', ['$resource', 'getAuthTokens',
     });
 }]);
 
-yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens',
-    function ($resource, getAuthTokens) {
+yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens','globalVars',
+    function ($resource, getAuthTokens, globalVars) {
         return $resource(
-            "http://127.0.0.1:5000/api/v1/bucketlists/:id",
+            globalVars.apiRoot + 'bucketlists/:id',
         {}, {
         get: {
             method: 'GET',
@@ -47,10 +47,10 @@ yoloServices.factory('SingleBucketlist', ['$resource', 'getAuthTokens',
     }
 ]);
 
-yoloServices.factory('Item', ['$resource', 'getAuthTokens',
-    function ($resource, getAuthTokens) {
+yoloServices.factory('Item', ['$resource', 'getAuthTokens','globalVars',
+    function ($resource, getAuthTokens, globalVars) {
         return $resource(
-            'http://127.0.0.1:5000/api/v1/bucketlists/:bucketlistId/items/',
+            globalVars.apiRoot + 'bucketlists/:bucketlistId/items/',
             {},{
             add: {
                 method: 'POST',
@@ -63,18 +63,18 @@ yoloServices.factory('Item', ['$resource', 'getAuthTokens',
     }
 ]);
 
-yoloServices.factory('SingleItem', ['$resource', 'getAuthTokens',
-    function ($resource, getAuthTokens){
+yoloServices.factory('SingleItem', ['$resource', 'getAuthTokens','globalVars',
+    function ($resource, getAuthTokens, globalVars){
         return $resource(
-        'http://127.0.0.1:5000/api/v1/bucketlists/:bucketlistId/items/:itemId/',
-        {},{
-        edit: {
-            method: 'PUT',
-            cache: false,
-            isArray: false,
-            headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
-        }
-        }
+            globalVars.apiRoot + 'bucketlists/:bucketlistId/items/:itemId/',
+            {},{
+            edit: {
+                method: 'PUT',
+                cache: false,
+                isArray: false,
+                headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
+            }
+            }
         );
     }
 ]);
@@ -112,3 +112,12 @@ yoloServices.factory('deleteAuthToken', ['$cookies',
         }
     };
 }]);
+
+// Global variables
+yoloServices.factory('globalVars', [
+    function() {
+        return {
+            apiRoot: 'http://127.0.0.1:5000/api/v1/'
+        };
+    }
+]);
