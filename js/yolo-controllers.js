@@ -134,6 +134,7 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             for(var i=0; i<$scope.pagesButtons.length; i++) {
                 $scope.pagesButtons[i] = i+1;
             }
+            $scope.noBucketlistsMsg = (!response.number) ? 'You have no bucketlists present' : '';
         },
         function error(response){
             // Lacks authentication, go back home
@@ -170,6 +171,11 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             Bucketlist.create({}, $.param({ 'name': $scope.bucketlistName }), function success(response){
                 // Add new bucketlist
                 $scope.bucketlists.push(response);
+
+                // Clear no bucketlist message
+                if ($scope.noBucketlistsMsg)
+                    $scope.noBucketlistsMsg = '';
+
             }, function error(response){
                 if (response.status == 400){ // Form errors
                     for (var i=0;i<response.data.name.length;i++){
