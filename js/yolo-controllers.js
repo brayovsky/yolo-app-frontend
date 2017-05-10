@@ -281,7 +281,7 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
     function($scope, $routeParams, SingleBucketlist, Item, $location, SingleItem){
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
-            $scope.bucketlist = response
+            $scope.bucketlist = response;
         }, function error(response){
             // Go back to dashboard,
             if (response.status === 400){
@@ -297,7 +297,7 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         $scope.errors = {
             itemName: [],
             bucketlistErrors: []
-        }
+        };
 
         $scope.addNewItem = function() {
             // Use item service to add item if name is present
@@ -344,8 +344,8 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             // Close modal
             SingleBucketlist.remove({id: $scope.bucketlist.id}, function success(response){
                 // Switch to dashboard
-                $scope.bucketlist = {};
-                $scope.errors.bucketlistErrors = ['Item deleted. Nothing to do here. Reload page.'];
+                $scope.bucketlist = null;
+                $scope.errors.bucketlistErrors = ['Bucketlist deleted. Nothing to do here. Reload page.'];
             }, function error(response){
                 if (response.status === 404){
                     $scope.errors.bucketlistErrors = [response.data.message];
