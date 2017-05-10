@@ -314,6 +314,7 @@ yoloControllers.controller('SearchCtrl', ['$scope','Bucketlist','$location','$ro
             $scope.bucketlists = response.bucketlists;
             $scope.currentPage = response.current_page;
             $scope.totalPages = response.pages;
+            $scope.totalResults = response.number;
             $scope.pagesButtons = new Array(response.pages);
             // Populate pages buttons with the page
             for(var i=0; i<$scope.pagesButtons.length; i++) {

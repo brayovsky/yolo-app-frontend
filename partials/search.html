@@ -5,7 +5,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="row">
                 <div class="text-center">
-                    <h1>Results for '{{ searchTerm }}'</h1>
+                    <h3>{{ totalResults }} results for '{{ searchTerm }}'</h3>
                 </div>
                 <div class="col-md-4" ng-repeat="bucketlist in bucketlists">
                     <div class="bucketlist-card">
@@ -17,10 +17,10 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-                <div class="col-md-12 text-center">
-                    <p class="text-primary">Showing page {{ currentPage }} of {{ totalPages }}</p>
-                    <button class="btn btn-default" ng-repeat="page in pagesButtons" ng-click="getPage(page);">{{ page }}</button>
-                </div>
+        <div class="row" ng-if="totalPages">
+            <div class="col-md-12 text-center">
+                <p class="text-primary">Showing page {{ currentPage }} of {{ totalPages }}</p>
+                <button class="btn btn-default" ng-repeat="page in pagesButtons" ng-click="getPage(page);">{{ page }}</button>
+            </div>
         </div>
  </div>
