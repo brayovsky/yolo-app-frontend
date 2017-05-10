@@ -8,10 +8,20 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
         $scope.showLogin = false;
         $scope.showSignup = true;
         $scope.userExists = false;
+        $scope.erredInputs = [];
+        $scope.errors = {
+            signupUsername: [],
+            signupEmail: [],
+            signupPassword: [],
+            signupRepeatPassword: []
+        };
 
         // Highlight inputs if they have errors
         $scope.highlightInput = function(inputid){
-            $('#' + inputid).css('border', '1px solid #f00');
+            // Using jquery to add class
+            $('#' + inputid).addClass('yolo-erred-input');
+            // Add erred input id
+            $scope.erredInputs.push(inputid);
         }
 
         // Toggle login form
@@ -27,16 +37,51 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
          // Access register endpoint
         $scope.yoloRegister = function(){
+            // Remove previous errors
+            $scope.errors.signupUsername = [];
+            $scope.errors.signupEmail = [];
+            $scope.errors.signupPassword = [];
+            $scope.errors.signupRepeatPassword = [];
+            for(var i=0; i < $scope.erredInputs.length; i++) {
+                // Remove error highlight via jquery
+                $('#' + $scope.erredInputs[i]).removeClass('yolo-erred-input');
+            }
+            var erred = false;
+            // Check username is not empty
+            if (!$scope.signupUsername) {
+                $scope.highlightInput('signup-username');
+                $scope.errors.signupUsername.push('Username cannot be empty');
+                erred = true;
+            }
+
+            // Check email is not empty
+            if (!$scope.signupEmail) {
+                $scope.highlightInput('signup-email');
+                $scope.errors.signupEmail.push('Email cannot be empty');
+                erred = true;
+            }
+
+            // Check password is not empty
+            if (!$scope.signupPassword) {
+                $scope.highlightInput('signup-password');
+                $scope.errors.signupPassword.push('Password cannot be empty');
+                erred = true;
+            }
+
             // Check passwords match
-            if ($scope.signupPassword !== $scope.signupRepeatPassword){
+            if ($scope.signupPassword !== $scope.signupRepeatPassword) {
                 // Highlight errors
                 $scope.highlightInput('signup-password');
                 $scope.highlightInput('signup-repeat-password');
 
                 // Display message
-                $scope.errors.signupRepeatPassword = ["Passwords don't match"];
-                return
+                $scope.errors.signupRepeatPassword.push("Passwords don't match");
+                erred = true;
             }
+
+            if(erred)
+                return;
+
             // Access API
             $http({
                 method : 'POST',
