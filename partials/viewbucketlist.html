@@ -6,14 +6,26 @@
         <p class="text-success text-center" style="padding:15px" ng-repeat="error in errors.bucketlistErrors">{{ error }}</p>
         <div class="bucketlist-card" ng-hide="!isBucketlistPresent">
             <form>
-                <input class="strip-input text-large text-capitalize" title="click to edit" ng-model="bucketlist.name" />
+                <input class="strip-input text-large text-capitalize" title="click to edit" ng-model="newBucketlistName" />
                 <button class="strip-button" type="submit" ng-click="editBucketlistName()"></button>
             </form>
-            <div>
-                <form ng-repeat="item in bucketlist.items">
-                    <input class="strip-input" title="Click to edit" ng-model="item.name" />
-                    <button class="strip-button" type="submit" ng-click="editItem(item.id, $index);"></button>
+            <p class="text-large text-capitalize" ng-bind="bucketlist.name"></p>
+            <div ng-repeat="item in bucketlist.items">
+                <p>
+                    <button class="btn btn-sm btn-default" ng-click="showEditBox(item.id);"><i class="glyphicon glyphicon-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-white glyphicon-trash"></i></button>
+                    {{ item.name }}
+                </p>
+                <div>
+                <form class="navbar-form hidden" id="item-{{ item.id }}">
+                    <div class="input-group">
+                        <input class="form-control" title="Click to edit" id="new-name-{{ item.id }}" />
+                        <div class="input-group-btn">
+                        <button class="btn btn-primary" type="submit" ng-click="editItem(item.id, $index);">Change</button>
+                        </div>
+                    </div>
                 </form>
+                </div>
             </div>
             <p class="text-danger" style="padding:15px" ng-repeat="error in errors.itemName">{{ error }}</p>
             <form class="navbar-form">

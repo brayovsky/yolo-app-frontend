@@ -326,19 +326,26 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
 
         };
 
+        $scope.showEditBox = function(itemId) {
+            // Show an item's edit box via jquery
+            $("#item-" + itemId).toggleClass('hidden');
+        };
+
         $scope.editItem = function(itemId, itemIndex) {
+            // Get new name via jquery
+            var newItemName = $('#new-name-' + itemId).val();
             // Use service to edit the item
-            if ($scope.bucketlist.items[itemIndex].name === '' || $scope.bucketlist.items[itemIndex].name === undefined){
+            if (newItemName === '' || newItemName === undefined){
                 $scope.errors.itemName = ['Name cannot be empty'];
                 return;
             }
-            SingleItem.edit({bucketlistId: $scope.bucketlist.id, 'itemId': itemId}, $.param({name: $scope.bucketlist.items[itemIndex].name},
+            SingleItem.edit({bucketlistId: $scope.bucketlist.id, 'itemId': itemId}, $.param({name: newItemName}),
             function success(response){
                 // Reassign object
                 $scope.bucketlist.items[itemIndex] = response;
             }, function error(response){
                 $scope.errors.itemName = ['Item could not be edited'];
-            }));
+            });
         }
 
         $scope.deleteBucketlist = function(){
