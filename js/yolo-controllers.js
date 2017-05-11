@@ -333,9 +333,10 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
 
         };
 
-        $scope.showEditBox = function(itemId) {
+        $scope.showEditBox = function(itemId, itemIndex) {
             // Show an item's edit box via jquery
             $("#item-" + itemId).toggleClass('hidden');
+            $('#new-name-' + itemId).val($scope.bucketlist.items[itemIndex].name)
         };
 
         $scope.editItem = function(itemId, itemIndex) {
