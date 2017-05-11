@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-md-4" ng-repeat="bucketlist in bucketlists">
                     <div class="bucketlist-card">
-                        <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created }}</i></p>
+                        <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created | date }}</i></p>
                         <a ng-href="#!/viewbucketlist/{{ bucketlist.id }}"><h3>{{ bucketlist.name | capitalize }}</h3></a>
                         <ul>
                             <li ng-repeat="item in bucketlist.items">{{ item.name | capitalize }}</li>

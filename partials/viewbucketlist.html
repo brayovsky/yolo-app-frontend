@@ -10,12 +10,15 @@
                 <p ng-show="item">
                     <button class="btn btn-sm btn-default" ng-click="showEditBox(item.id, $index);"><i class="glyphicon glyphicon-pencil"></i></button>
                     <button class="btn btn-sm btn-danger" ng-click="setActiveItem(item.id, $index);" data-toggle="modal" data-target="#delete-item-modal"><i class="glyphicon glyphicon-white glyphicon-trash"></i></button>
+                    <button class="btn btn-sm btn-success" ng-show="item.done"><i class="glyphicon glyphicon-white glyphicon-ok"></i> Done</button>
+                    <button class="btn btn-sm btn-danger" ng-show="!item.done"><i class="glyphicon glyphicon-white glyphicon-remove"></i> Not done </button>
                     {{ item.name | capitalize }}
                 </p>
                 <div>
                 <form class="navbar-form hidden" id="item-{{ item.id }}">
+                    <label class="text-muted"><input type="checkbox" name="item-edit-done" id="item-edit-done-{{ item.id }}"> Mark as done</label>
                     <div class="input-group">
-                        <input class="form-control" title="Click to edit" id="new-name-{{ item.id }}" />
+                        <input class="form-control" id="new-name-{{ item.id }}" />
                         <div class="input-group-btn">
                         <button class="btn btn-primary" type="submit" ng-click="editItem(item.id, $index);">Change</button>
                         </div>
@@ -32,8 +35,8 @@
                     </div>
                 </div>
             </form>
-            <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created }}</i></p>
-            <p class="text-info" style="font-size: 11px"><i>Modified: {{ bucketlist.date_modified }}</i></p>
+            <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created | date }}</i></p>
+            <p class="text-info" style="font-size: 11px"><i>Modified: {{ bucketlist.date_modified |date }}</i></p>
             <button class="strip-button text-primary" ng-click="toggleEditBucketlistForm();">Edit this bucketlist</button><br>
             <p class="text-danger" ng-repeat="error in errors.bucketlistEditErrors">{{ error }}</p>
             <form class="navbar-form" ng-show="showEditBucketlistForm">
