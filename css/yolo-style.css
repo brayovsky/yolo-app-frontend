@@ -25,3 +25,6 @@
     height: 350px;
     overflow: hidden;
 }
+.yolo-erred-input{
+    border: 1px solid #f00;
+}

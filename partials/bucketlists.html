@@ -13,9 +13,14 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="text-muted" ng-bind="noBucketlistsMsg"></h3>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4" ng-repeat="bucketlist in bucketlists">
                     <div class="bucketlist-card">
-                        <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created }}</i></p>
+                        <p class="text-info" style="font-size: 11px"><i>Created: {{ bucketlist.date_created | date }}</i></p>
                         <a ng-href="#!/viewbucketlist/{{ bucketlist.id }}"><h3>{{ bucketlist.name | capitalize }}</h3></a>
                         <ul>
                             <li ng-repeat="item in bucketlist.items">{{ item.name | capitalize }}</li>
@@ -34,7 +39,7 @@
                     </form>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-if="totalPages">
                 <div class="col-md-12 text-center">
                     <p class="text-primary">Showing page {{ currentPage }} of {{ totalPages }}</p>
                     <button class="btn btn-default" ng-repeat="page in pagesButtons" ng-click="getPage(page);">{{ page }}</button>

@@ -73,6 +73,12 @@ yoloServices.factory('SingleItem', ['$resource', 'getAuthTokens','globalVars',
                 cache: false,
                 isArray: false,
                 headers: { Authorization: 'Basic ' + getAuthTokens(), 'Content-Type': 'application/x-www-form-urlencoded'}
+            },
+            remove: {
+                method: 'DELETE',
+                cache: false,
+                isArray: false,
+                headers: { Authorization: 'Basic ' + getAuthTokens()}
             }
             }
         );

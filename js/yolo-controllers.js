@@ -8,11 +8,24 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
         $scope.showLogin = false;
         $scope.showSignup = true;
         $scope.userExists = false;
+        $scope.erredInputs = [];
+        $scope.errors = {
+            signupUsername: [],
+            signupEmail: [],
+            signupPassword: [],
+            signupRepeatPassword: [],
+            loginUsername: [],
+            loginPassword: []
+        };
 
         // Highlight inputs if they have errors
         $scope.highlightInput = function(inputid){
-            $('#' + inputid).css('border', '1px solid #f00');
+            // Using jquery to add class
+            $('#' + inputid).addClass('yolo-erred-input');
+            // Add erred input id
+            $scope.erredInputs.push(inputid);
         }
+
 
         // Toggle login form
         $scope.toggleLogin = function(event){
@@ -27,16 +40,51 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
          // Access register endpoint
         $scope.yoloRegister = function(){
+            // Remove previous errors
+            $scope.errors.signupUsername = [];
+            $scope.errors.signupEmail = [];
+            $scope.errors.signupPassword = [];
+            $scope.errors.signupRepeatPassword = [];
+            for(var i=0; i < $scope.erredInputs.length; i++) {
+                // Remove error highlight via jquery
+                $('#' + $scope.erredInputs[i]).removeClass('yolo-erred-input');
+            }
+            var erred = false;
+            // Check username is not empty
+            if (!$scope.signupUsername) {
+                $scope.highlightInput('signup-username');
+                $scope.errors.signupUsername.push('Username cannot be empty');
+                erred = true;
+            }
+
+            // Check email is not empty
+            if (!$scope.signupEmail) {
+                $scope.highlightInput('signup-email');
+                $scope.errors.signupEmail.push('Email cannot be empty');
+                erred = true;
+            }
+
+            // Check password is not empty
+            if (!$scope.signupPassword) {
+                $scope.highlightInput('signup-password');
+                $scope.errors.signupPassword.push('Password cannot be empty');
+                erred = true;
+            }
+
             // Check passwords match
-            if ($scope.signupPassword !== $scope.signupRepeatPassword){
+            if ($scope.signupPassword !== $scope.signupRepeatPassword) {
                 // Highlight errors
                 $scope.highlightInput('signup-password');
                 $scope.highlightInput('signup-repeat-password');
 
                 // Display message
-                $scope.errors.signupRepeatPassword = ["Passwords don't match"];
-                return
+                $scope.errors.signupRepeatPassword.push("Passwords don't match");
+                erred = true;
             }
+
+            if(erred)
+                return;
+
             // Access API
             $http({
                 method : 'POST',
@@ -84,6 +132,31 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
 
         // Access login endpoint
         $scope.yoloLogin = function(){
+            // Clear previous errors
+            $scope.errors.loginPassword = [];
+            $scope.errors.loginUsername = [];
+            for(var i=0; i < $scope.erredInputs.length; i++) {
+                // Remove error highlight via jquery
+                $('#' + $scope.erredInputs[i]).removeClass('yolo-erred-input');
+            }
+
+            var erred = false;
+            // Check username is not empty
+            if(!$scope.loginUsername){
+                $scope.highlightInput('login-username');
+                $scope.errors.loginUsername.push('Fill in username');
+                erred = true;
+            }
+            // Check password is not empty
+            if(!$scope.loginPassword){
+                $scope.highlightInput('login-password');
+                $scope.errors.loginPassword.push('Fill in password');
+                erred = true;
+            }
+
+            if(erred)
+                return;
+
             $http({
                 method : 'POST',
                 url : globalVars.apiRoot + 'auth/login',
@@ -134,6 +207,7 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             for(var i=0; i<$scope.pagesButtons.length; i++) {
                 $scope.pagesButtons[i] = i+1;
             }
+            $scope.noBucketlistsMsg = (!response.number) ? 'You have no bucketlists present' : '';
         },
         function error(response){
             // Lacks authentication, go back home
@@ -170,6 +244,11 @@ yoloControllers.controller('DashboardCtrl', ['$scope', '$http','Bucketlist','$lo
             Bucketlist.create({}, $.param({ 'name': $scope.bucketlistName }), function success(response){
                 // Add new bucketlist
                 $scope.bucketlists.push(response);
+
+                // Clear no bucketlist message
+                if ($scope.noBucketlistsMsg)
+                    $scope.noBucketlistsMsg = '';
+
             }, function error(response){
                 if (response.status == 400){ // Form errors
                     for (var i=0;i<response.data.name.length;i++){
@@ -202,7 +281,8 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
     function($scope, $routeParams, SingleBucketlist, Item, $location, SingleItem){
         // Get the bucketlist
         SingleBucketlist.get({id: $routeParams.id}, function success(response){
-            $scope.bucketlist = response
+            $scope.bucketlist = response;
+            $scope.isBucketlistPresent = true;
         }, function error(response){
             // Go back to dashboard,
             if (response.status === 400){
@@ -215,10 +295,17 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             $location.path('/dashboard');
         });
 
+        $scope.showEditBucketlistForm = false;
+
+        $scope.toggleEditBucketlistForm = function() {
+            $scope.showEditBucketlistForm = !$scope.showEditBucketlistForm;
+        };
+
         $scope.errors = {
             itemName: [],
-            bucketlistErrors: []
-        }
+            bucketlistErrors: [],
+            bucketlistEditErrors: []
+        };
 
         $scope.addNewItem = function() {
             // Use item service to add item if name is present
@@ -246,27 +333,75 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
 
         };
 
+        $scope.showEditBox = function(itemId, itemIndex) {
+            // Show an item's edit box via jquery
+            $("#item-" + itemId).toggleClass('hidden');
+            // Set name
+            $('#new-name-' + itemId).val($scope.bucketlist.items[itemIndex].name);
+            // Set done
+            $('#item-edit-done-' + itemId).attr('checked', $scope.bucketlist.items[itemIndex].done);
+        };
+
         $scope.editItem = function(itemId, itemIndex) {
+            // Clear previous errors
+            $scope.errors.itemName = []
+
+            // Get new name via jquery
+            var newItemName = $('#new-name-' + itemId).val();
+            var itemEditDone = $('#item-edit-done-' + itemId).is(':checked');
             // Use service to edit the item
-            if ($scope.bucketlist.items[itemIndex].name === '' || $scope.bucketlist.items[itemIndex].name === undefined){
+            if (newItemName === '' || newItemName === undefined){
                 $scope.errors.itemName = ['Name cannot be empty'];
                 return;
             }
-            SingleItem.edit({bucketlistId: $scope.bucketlist.id, 'itemId': itemId}, $.param({name: $scope.bucketlist.items[itemIndex].name},
+            SingleItem.edit({bucketlistId: $scope.bucketlist.id, 'itemId': itemId}, $.param({name: newItemName, done:itemEditDone}),
             function success(response){
                 // Reassign object
                 $scope.bucketlist.items[itemIndex] = response;
             }, function error(response){
-                $scope.errors.itemName = ['Item could not be edited'];
-            }));
+                if(response.status === 400){
+                    $scope.errors.itemName = response.data.name;
+                }
+                else{
+                    $scope.errors.itemName = ['Item could not be edited'];
+                }
+            });
         }
+
+        $scope.setActiveItem = function(itemId, itemIndex) {
+            $scope.activeItem = {id:itemId, index: itemIndex};
+        };
+
+        $scope.deleteChosenItem = function() {
+            // Clear previous errors
+            $scope.itemDeleteSuccess = '';
+            $scope.errors.itemDeleteSuccess = '';
+
+            SingleItem.remove({bucketlistId: $scope.bucketlist.id, 'itemId': $scope.activeItem.id},
+            function success(response) {
+                // Show message and remove item
+                $scope.itemDeleteSuccess = response.message;
+                $scope.bucketlist.items[$scope.activeItem.index] = null;
+            },
+            function error(response) {
+                // Show error
+                if (response.status === 404){
+                    $scope.errors.itemDeleteError = response.data.message;
+                }
+                else{
+                    $scope.errors.itemDeleteError = 'An error occurred and the item could not be deleted';
+                }
+            }
+            );
+        };
 
         $scope.deleteBucketlist = function(){
             // Close modal
             SingleBucketlist.remove({id: $scope.bucketlist.id}, function success(response){
                 // Switch to dashboard
-                $scope.bucketlist = {};
-                $scope.errors.bucketlistErrors = ['Item deleted. Nothing to do here. Reload page.'];
+                $scope.isBucketlistPresent = false;
+                $scope.bucketlist = null;
+                $scope.errors.bucketlistErrors = ['Bucketlist deleted. Nothing to do here. Reload page.'];
             }, function error(response){
                 if (response.status === 404){
                     $scope.errors.bucketlistErrors = [response.data.message];
@@ -278,19 +413,27 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         };
 
         $scope.editBucketlistName = function(){
+            // Clear previous errors
+            $scope.errors.bucketlistEditErrors = [];
+
             // Name cannot be empty
-            if ($scope.bucketlist.name === '' || $scope.bucketlist.name === undefined){
-                $scope.errors.bucketlistErrors = ['Bucketlist name cannot be empty'];
+            if ($scope.newBucketlistName === '' || $scope.newBucketlistName === undefined){
+                $scope.errors.bucketlistEditErrors = ['Bucketlist name cannot be empty'];
                 return;
             }
             // Edit the bucketlist name
-            SingleBucketlist.edit({id: $scope.bucketlist.id}, $.param({name: $scope.bucketlist.name}),
+            SingleBucketlist.edit({id: $scope.bucketlist.id}, $.param({name: $scope.newBucketlistName}),
             function success(response) {
                 // Change the name
                 $scope.bucketlist = response;
+                $scope.errors.bucketlistErrors = ['Bucketlist has been edited successfully'];
             }, function error(response) {
                 // Show errors
-                $scope.errors.bucketlistErrors = ['An error occured and we could not edit the name'];
+                if (response.status == 400) {
+                    $scope.errors.bucketlistEditErrors = response.data.name;
+                }else{
+                    $scope.errors.bucketlistEditErrors = ['An error occured and we could not edit the name'];
+                }
             });
         };
 
@@ -308,6 +451,7 @@ yoloControllers.controller('SearchCtrl', ['$scope','Bucketlist','$location','$ro
             $scope.bucketlists = response.bucketlists;
             $scope.currentPage = response.current_page;
             $scope.totalPages = response.pages;
+            $scope.totalResults = response.number;
             $scope.pagesButtons = new Array(response.pages);
             // Populate pages buttons with the page
             for(var i=0; i<$scope.pagesButtons.length; i++) {
