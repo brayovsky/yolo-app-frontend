@@ -356,6 +356,33 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             });
         }
 
+        $scope.setActiveItem = function(itemId, itemIndex) {
+            $scope.activeItem = {id:itemId, index: itemIndex};
+        };
+
+        $scope.deleteChosenItem = function() {
+            // Clear previous errors
+            $scope.itemDeleteSuccess = '';
+            $scope.errors.itemDeleteSuccess = '';
+
+            SingleItem.remove({bucketlistId: $scope.bucketlist.id, 'itemId': $scope.activeItem.id},
+            function success(response) {
+                // Show message and remove item
+                $scope.itemDeleteSuccess = response.message;
+                $scope.bucketlist.items[$scope.activeItem.index] = null;
+            },
+            function error(response) {
+                // Show error
+                if (response.status === 404){
+                    $scope.errors.itemDeleteError = response.data.message;
+                }
+                else{
+                    $scope.errors.itemDeleteError = 'An error occurred and the item could not be deleted';
+                }
+            }
+            );
+        };
+
         $scope.deleteBucketlist = function(){
             // Close modal
             SingleBucketlist.remove({id: $scope.bucketlist.id}, function success(response){
