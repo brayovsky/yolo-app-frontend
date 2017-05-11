@@ -343,6 +343,9 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         };
 
         $scope.editItem = function(itemId, itemIndex) {
+            // Clear previous errors
+            $scope.errors.itemName = []
+
             // Get new name via jquery
             var newItemName = $('#new-name-' + itemId).val();
             var itemEditDone = $('#item-edit-done-' + itemId).is(':checked');
@@ -356,7 +359,12 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
                 // Reassign object
                 $scope.bucketlist.items[itemIndex] = response;
             }, function error(response){
-                $scope.errors.itemName = ['Item could not be edited'];
+                if(response.status === 400){
+                    $scope.errors.itemName = response.data.name;
+                }
+                else{
+                    $scope.errors.itemName = ['Item could not be edited'];
+                }
             });
         }
 
@@ -421,7 +429,11 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
                 $scope.errors.bucketlistErrors = ['Bucketlist has been edited successfully'];
             }, function error(response) {
                 // Show errors
-                $scope.errors.bucketlistEditErrors = ['An error occured and we could not edit the name'];
+                if (response.status == 400) {
+                    $scope.errors.bucketlistEditErrors = response.data.name;
+                }else{
+                    $scope.errors.bucketlistEditErrors = ['An error occured and we could not edit the name'];
+                }
             });
         };
 
