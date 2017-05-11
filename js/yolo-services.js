@@ -86,36 +86,27 @@ yoloServices.factory('SingleItem', ['$resource', 'getAuthTokens','globalVars',
 ]);
 
 // Store auth tokens
-yoloServices.factory('saveAuthToken',['$cookies',
-    function($cookies) {
+yoloServices.factory('saveAuthToken',['$window',
+    function($window) {
         return function(token) {
         var encodedToken = btoa(token + ':');
-//        $cookies.authToken = encodedToken;
-        var now = new Date()
-        var expiryDate = new Date(now.getFullYear(), now.getMonth()+12, now.getDate());
-        $cookies.put('authToken', encodedToken, {expires: expiryDate})
+        $window.localStorage.setItem('authtoken', encodedToken);
     };
 }]);
 
 // Check for auth-tokens
-yoloServices.factory('getAuthTokens', ['$cookies',
-    function($cookies) {
+yoloServices.factory('getAuthTokens', ['$window',
+    function($window) {
         return function() {
-            var authentication = $cookies.get("authToken");
-            if (authentication !== undefined && authentication !== "") {
-                return authentication;
-            }
-            return "";
+            return $window.localStorage.getItem('authtoken');
         };
     }]);
 
 // Delete auth credentials
-yoloServices.factory('deleteAuthToken', ['$cookies',
-    function($cookies) {
+yoloServices.factory('deleteAuthToken', ['$window',
+    function($window) {
         return function() {
-        if ($cookies.get('authToken') !== '' || $cookies.get('authToken') !== undefined){
-            $cookies.remove('authToken');
-        }
+            $window.localStorage.removeItem('authtoken');
     };
 }]);
 
