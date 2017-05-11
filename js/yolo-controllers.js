@@ -2,8 +2,28 @@
 /* Controllers */
 var yoloControllers = angular.module('yoloControllers', ['yoloServices']);
 
-yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken','deleteAuthToken','globalVars',
-    function MainCtrl($scope, $http, $location, saveAuthToken, deleteAuthToken, globalVars) {
+yoloControllers.controller('NavCtrl',['$scope','$location','$window','deleteAuthToken',
+    function NavCtrl($scope, $location, $window, deleteAuthToken) {
+        $scope.appName = 'yolo';
+        $scope.userName = $window.localStorage.getItem('username');
+
+        $scope.logout = function(){
+            // Delete authtoken
+            deleteAuthToken();
+            // Delete username
+            $window.localStorage.removeItem('username');
+            // Go to landingpage
+            $location.path('/');
+        };
+
+        $scope.goToDashboard = function() {
+            $location.path('/dashboard');
+        };
+    }
+]);
+
+yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthToken','globalVars','$window',
+    function MainCtrl($scope, $http, $location, saveAuthToken, globalVars, $window) {
         $scope.appName = 'yolo';
         $scope.showLogin = false;
         $scope.showSignup = true;
@@ -168,9 +188,11 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
                 'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }).then(function success(response) {
-            // Delete existing tokens, save new ones, switch to dashboard
-            deleteAuthToken();
+            // Save new token
             saveAuthToken(response.data.token);
+            // Save new username
+            $window.localStorage.setItem('username',response.data.user)
+            // Go to dashboard
             $location.path('/dashboard');
         },
         function error(response){
