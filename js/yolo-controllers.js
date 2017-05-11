@@ -295,9 +295,16 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
             $location.path('/dashboard');
         });
 
+        $scope.showEditBucketlistForm = false;
+
+        $scope.toggleEditBucketlistForm = function() {
+            $scope.showEditBucketlistForm = !$scope.showEditBucketlistForm;
+        };
+
         $scope.errors = {
             itemName: [],
-            bucketlistErrors: []
+            bucketlistErrors: [],
+            bucketlistEditErrors: []
         };
 
         $scope.addNewItem = function() {
@@ -366,19 +373,23 @@ yoloControllers.controller('BucketlistCtrl', ['$scope','$routeParams','SingleBuc
         };
 
         $scope.editBucketlistName = function(){
+            // Clear previous errors
+            $scope.errors.bucketlistEditErrors = [];
+
             // Name cannot be empty
-            if ($scope.bucketlist.name === '' || $scope.bucketlist.name === undefined){
-                $scope.errors.bucketlistErrors = ['Bucketlist name cannot be empty'];
+            if ($scope.newBucketlistName === '' || $scope.newBucketlistName === undefined){
+                $scope.errors.bucketlistEditErrors = ['Bucketlist name cannot be empty'];
                 return;
             }
             // Edit the bucketlist name
-            SingleBucketlist.edit({id: $scope.bucketlist.id}, $.param({name: $scope.bucketlist.name}),
+            SingleBucketlist.edit({id: $scope.bucketlist.id}, $.param({name: $scope.newBucketlistName}),
             function success(response) {
                 // Change the name
                 $scope.bucketlist = response;
+                $scope.errors.bucketlistErrors = ['Bucketlist has been edited successfully'];
             }, function error(response) {
                 // Show errors
-                $scope.errors.bucketlistErrors = ['An error occured and we could not edit the name'];
+                $scope.errors.bucketlistEditErrors = ['An error occured and we could not edit the name'];
             });
         };
 
