@@ -28,6 +28,6 @@ The main building blocks are:
         
  * Start the development server
     
-        $ npm start dev
+        $ npm run dev
 
 * Explore the app
