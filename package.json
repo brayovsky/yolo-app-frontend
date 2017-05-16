@@ -4,7 +4,8 @@
   "description": "An angular.js application that consumes the yolo API.",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "lite-server"
   },
   "repository": {
     "type": "git",
@@ -26,8 +27,5 @@
   },
   "devDependencies": {
     "lite-server": "^2.3.0"
-  },
-  "scripts": {
-    "dev" : "lite-server"
   }
 }
