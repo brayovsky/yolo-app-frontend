@@ -194,7 +194,8 @@ yoloControllers.controller('MainCtrl', ['$scope','$http','$location','saveAuthTo
             // Save new username
             $window.localStorage.setItem('username',response.data.user)
             // Go to dashboard
-            $location.path('/dashboard');
+            // Fix err -> Using window since localStorage does not register until the page is reloaded
+            $window.location = ('#!/dashboard');
         },
         function error(response){
             // Highlight form errors
