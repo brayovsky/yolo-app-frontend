@@ -100,7 +100,7 @@ yoloServices.factory('saveAuthToken',['$window','globalVars',
 yoloServices.factory('getAuthTokens', ['$window','globalVars',
     function($window, globalVars) {
         return function() {
-            globalVars.authToken = $window.localStorage.getItem('authtoken');
+            $window.localStorage.getItem('authtoken');
         };
     }]);
 
@@ -109,16 +109,15 @@ yoloServices.factory('deleteAuthToken', ['$window','globalVars',
     function($window, globalVars) {
         return function() {
             $window.localStorage.removeItem('authtoken');
-            globalVars.authToken = null;
     };
 }]);
 
 // Global variables
-yoloServices.factory('globalVars', [
-    function() {
+yoloServices.factory('globalVars', ['$window',
+    function($window) {
         return {
             apiRoot: 'http://127.0.0.1:5000/api/v1/',
-            authToken: null
+            authToken: $window.localStorage.getItem('authtoken')
         };
     }
 ]);
