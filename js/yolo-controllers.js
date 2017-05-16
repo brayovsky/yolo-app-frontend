@@ -12,6 +12,7 @@ yoloControllers.controller('NavCtrl',['$scope','$location','$window','deleteAuth
             deleteAuthToken();
             // Delete username
             $window.localStorage.removeItem('username');
+            $scope.userName = null;
             // Go to landingpage
             $location.path('/');
         };
